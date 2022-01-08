@@ -1,7 +1,28 @@
 import os
 import cv2
 from base_camera import BaseCamera
+import datetime  # WS
+import rpi_status as ws  #WS
 
+def add_info(frame): # WS
+    timestamp = datetime.datetime.now()
+    txt = timestamp.strftime("%d %B %Y %I:%M:%S %p")
+    cv2.putText(frame,
+                txt,
+                (20, frame.shape[0] - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.90,
+                (255, 120, 255), 2)
+    temp = ws.get_temp()
+    temp = '{}: {}'.format(*temp)
+    cv2.putText(frame, temp, (20, frame.shape[0] - 40),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.90,
+                (0, 255, 255), 2)
+    uptime = ws.get_uptime()
+    uptime = '{}: {}'.format(*uptime)
+    cv2.putText(frame, uptime, (20, frame.shape[0] - 70),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.90,
+                (255, 255, 120), 2)
+    return frame
 
 class Camera(BaseCamera):
     video_source = 0
@@ -30,6 +51,12 @@ class Camera(BaseCamera):
         while True:
             # read current frame
             _, img = camera.read()
+
+            # image processing step goes here
+            # xxx
+
+            # information as text on image goes here
+            img = add_info(img)  # WS
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()
