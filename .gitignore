@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# WS 1/7/22
+.ipynb_checkpoints/
