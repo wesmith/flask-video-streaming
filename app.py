@@ -4,8 +4,11 @@
 # of the box: impressive
 
 # WS TODO
-# - run webcam via opencv
-# - add command-line inputs: camera type, url, port
+# - (done) run webcam via opencv
+# - add command-line inputs: camera type, url, port, frame size
+# - apply a stylesheet
+# - generalize camera to support image-processing algorithms
+
 
 from importlib import import_module
 import os
