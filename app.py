@@ -24,12 +24,22 @@ else:
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
 
+button_names = ['ZERO', 'ONE', 'TWO']  # WS
+
+class Message():
+    def __init__(self, msg=100):
+        self.msg = msg
+msg = Message()
+
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+@app.route('/val') # WS added buttons
+def index(val=5):
     """Video streaming home page."""
-    return render_template('index.html')
+    msg.msg = val
+    return render_template('index.html',
+                           buttons=button_names)
 
 def gen(camera):
     """Video streaming generator function."""
@@ -38,7 +48,7 @@ def gen(camera):
         frame = camera.get_frame()
         yield b'Content-Type: image/jpeg\r\n\r\n' + frame +\
               b'\r\n--frame\r\n'
-
+        
 @app.route('/video_feed')
 def video_feed():
     """
@@ -47,7 +57,7 @@ def video_feed():
     """
     txt = 'multipart/x-mixed-replace; boundary=frame'
     # WS try passing a message to Camera class
-    return Response(gen(Camera(message='hello')), mimetype=txt)
+    return Response(gen(Camera(message=msg)), mimetype=txt)
 
 
 if __name__ == '__main__':

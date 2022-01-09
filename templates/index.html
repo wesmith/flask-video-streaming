@@ -1,4 +1,16 @@
 <html>
+    
+<style>
+<!-- border doesn_t seem to work -->
+.button {
+  background-color: transparent;
+  color: rgb(250, 250, 250);
+  font-size: 4rem;
+  margin: 10px 15px;
+  border: none;
+}
+</style>
+ 
   <head>
     <title>Raspberry Pi 4 Video Streaming</title>
       <link rel="stylesheet" 
@@ -9,5 +21,27 @@
     <img src="{{ url_for('video_feed') }}">
     <!-- WS the following line will put up a second identical frame -->
     <!-- img src="{{ url_for('video_feed') }}" -->
-  </body>
+
+    <script>
+    function changed(val)
+    {window.location.href='/' + val}  
+    </script>
+
+    <br></br>
+    <table class="center">
+    
+    <%for j, k in enumerate(buttons):>
+        <tr>
+        <td>
+        <input type='button' class='button'
+          onClick='changed({{j}})' 
+          value={{k}}>
+        </td>
+        </tr>
+    <%end>
+    
+    </table>
+    
+    
+    </body>
 </html>

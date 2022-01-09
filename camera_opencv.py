@@ -104,7 +104,7 @@ class Camera(BaseCamera):
             # information as text on image goes here
             img = add_info(img, fps, cam_uptime,
                            scale[size], sizes[size],
-                           Camera.message) # WS
+                           Camera.message.msg) # WS
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()
