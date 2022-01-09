@@ -13,8 +13,7 @@ def sec_to_dhms(sec): # seconds to day, hour, min, sec
     return 'Camera uptime: {} D, {} H, {} M, {:.1f} S'.\
             format(int(dd), int(hh), int(mm), ss)
 
-
-def add_info(frame, fps, cam_uptime, scale, wid_hei): # WS
+def add_info(frame, fps, cam_uptime, scale, wid_hei, msg): # WS
     font   = cv2.FONT_HERSHEY_SIMPLEX
     f_size = 0.90 * scale
     separation = int(10 * scale)
@@ -39,18 +38,22 @@ def add_info(frame, fps, cam_uptime, scale, wid_hei): # WS
     fps = '{:4.1f} FPS for width {}, height {}'.format(fps, *wid_hei)
     cv2.putText(frame, fps, (col0, row0 - 3 * delta), font, f_size,
                 (120, 255, 120), thick) # light green
+    msg = 'Button message: {}'.format(msg)
+    cv2.putText(frame, msg, (col0, row0 - 4 * delta), font, f_size,
+                (255, 255, 255), thick) # white
     return frame
 
 class Camera(BaseCamera):
     video_source = 0
+    #message = None  # WS
 
-    def __init__(self):
+    def __init__(self, message=None):
         if os.environ.get('OPENCV_CAMERA_SOURCE'):
             val = int(os.environ['OPENCV_CAMERA_SOURCE']) # WS
             Camera.set_video_source(val) # WS: shorten line
             
-        #self.size = size # WS
-        
+        Camera.message = message # WS
+       
         super(Camera, self).__init__()
         
     @staticmethod
@@ -60,10 +63,10 @@ class Camera(BaseCamera):
     # WS see if this will run without being static so it can
     # receive parameters from 'self': change it here and in 
     # BaseCamera
-    @staticmethod  # WS see if it will run without being static
+    @staticmethod
     def frames():
-        camera = cv2.VideoCapture(Camera.video_source)
-        if not camera.isOpened():
+        cam = cv2.VideoCapture(Camera.video_source)
+        if not cam.isOpened():
             raise RuntimeError('Could not start camera.')
 
         # WS some size options (not a complete list)
@@ -76,8 +79,8 @@ class Camera(BaseCamera):
         scale = {'small': 0.25, 'medium': 0.50, 
                  'large': 1.00, 'Xlarge': 2.00}
         wid, hei = sizes[size]
-        camera.set(cv2.CAP_PROP_FRAME_WIDTH,  wid)  # WS
-        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, hei)  # WS
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH,  wid)  # WS
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, hei)  # WS
         
         fps   = 15.0   # WS a rough initial value
         t_start = t_old = time() # WS
@@ -93,14 +96,15 @@ class Camera(BaseCamera):
             cam_uptime = t_old - t_start  # time cam on in sec
             
             # read current frame
-            _, img = camera.read()
+            _, img = cam.read()
 
             # image processing step goes here
             # xxx
 
             # information as text on image goes here
             img = add_info(img, fps, cam_uptime,
-                           scale[size], sizes[size]) # WS
+                           scale[size], sizes[size],
+                           Camera.message) # WS
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()

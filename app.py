@@ -46,7 +46,8 @@ def video_feed():
     img tag.
     """
     txt = 'multipart/x-mixed-replace; boundary=frame'
-    return Response(gen(Camera()), mimetype=txt)
+    # WS try passing a message to Camera class
+    return Response(gen(Camera(message='hello')), mimetype=txt)
 
 
 if __name__ == '__main__':
