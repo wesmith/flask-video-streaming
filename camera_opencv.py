@@ -6,7 +6,15 @@ import rpi_status as ws  # WS module
 from time import time    # WS
 
 
-def add_info(frame, fps, scale, wid_hei): # WS
+def sec_to_dhms(sec): # seconds to day, hour, min, sec
+    dd, r  = divmod(sec, 24*3600)
+    hh, r  = divmod(r,      3600)
+    mm, ss = divmod(r,        60)
+    return 'Camera uptime: {} D, {} H, {} M, {:.1f} S'.\
+            format(int(dd), int(hh), int(mm), ss)
+
+
+def add_info(frame, fps, cam_uptime, scale, wid_hei): # WS
     font   = cv2.FONT_HERSHEY_SIMPLEX
     f_size = 0.90 * scale
     separation = int(10 * scale)
@@ -14,6 +22,7 @@ def add_info(frame, fps, scale, wid_hei): # WS
     col0   = 10
     delta  = int(30 * scale)
     thick  = 2 if scale >= 1 else 1
+
     timestamp = datetime.datetime.now()
     txt = timestamp.strftime("%d %B %Y %I:%M:%S %p")
     cv2.putText(frame, txt, (col0, row0), font, f_size,
@@ -22,8 +31,9 @@ def add_info(frame, fps, scale, wid_hei): # WS
     temp = '{}: {}'.format(*temp)
     cv2.putText(frame, temp, (col0, row0 - delta), font, f_size,
                 (0, 255, 255), thick) # bright yellow
-    uptime = ws.get_uptime()
-    uptime = '{}: {}'.format(*uptime)
+    #uptime = ws.get_uptime()  # system uptime
+    #uptime = '{}: {}'.format(*uptime)
+    uptime = sec_to_dhms(cam_uptime)
     cv2.putText(frame, uptime, (col0, row0 - 2 * delta), font, f_size,
                 (255, 255, 120), thick) # light cyan
     fps = '{:4.1f} FPS for width {}, height {}'.format(fps, *wid_hei)
@@ -69,8 +79,8 @@ class Camera(BaseCamera):
         camera.set(cv2.CAP_PROP_FRAME_WIDTH,  wid)  # WS
         camera.set(cv2.CAP_PROP_FRAME_HEIGHT, hei)  # WS
         
-        fps   = 0.0    # WS
-        t_old = time() # WS
+        fps   = 15.0   # WS a rough initial value
+        t_start = t_old = time() # WS
         # WS alpha: smoothing factor for frame/sec estimate,
         # float 0 to 1; the larger alpha, the more smoothing
         alpha = 0.9
@@ -80,6 +90,7 @@ class Camera(BaseCamera):
             dt    = time() - t_old
             t_old = time()
             fps   = alpha * fps + (1 - alpha) / dt
+            cam_uptime = t_old - t_start  # time cam on in sec
             
             # read current frame
             _, img = camera.read()
@@ -88,7 +99,8 @@ class Camera(BaseCamera):
             # xxx
 
             # information as text on image goes here
-            img = add_info(img, fps, scale[size], sizes[size]) # WS
+            img = add_info(img, fps, cam_uptime,
+                           scale[size], sizes[size]) # WS
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()
