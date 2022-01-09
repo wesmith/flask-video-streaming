@@ -99,6 +99,8 @@ class BaseCamera(object):
 
         return BaseCamera.frame
 
+    # WS see if this will run without being static so it can
+    # receive parameters from 'self': change it here and in Camera
     @staticmethod
     def frames():
         """"
