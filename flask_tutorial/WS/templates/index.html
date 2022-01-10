@@ -1,26 +1,29 @@
 <!doctype html>
 <html>
    <body>
-       
-       
+
     <script>
     function changed(value)
     {window.location.href='/' + value}  
     </script>
-
        
         <table border=4>
-
-        {% for key, value in msg.items() %}
-        <tr>
-        <td>
-           <input type='button' class='button'
-            onClick='changed({{value}})' 
+        {% for key, choices in buttons.items() %}
+            <tr>
+            <td>
+            <input type='button' class='button'
             value={{key}}>
-        </td>
-        </tr>
+            </td>
+            {% for toggle, value in choices.items() %}
+                <td>
+                <input type='button' class='button'
+                onClick='changed({{value}})'
+                value={{toggle}}>
+                </td>
+            {% endfor %}
+            </tr>
         {% endfor %}
-    
         </table>
+       
    </body>
 </html>
