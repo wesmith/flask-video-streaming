@@ -25,4 +25,12 @@ def hello_user(name):
 
 if __name__ == '__main__':
     
-   app.run(host='0.0.0.0', debug = True)
+    # NOTE: '0.0.0.0' host works on server machine AND remote 
+    # machines (within the LAN) with url 10.0.0.7 
+    # (the rpi4 IP address in the LAN)
+    app.run(host='0.0.0.0', debug = True)
+    
+    # HOWEVER, 'localhost' works on the server machine but NOT
+    # on other LAN machines
+    #app.run(host='localhost', debug = True) # this works too
+    # localhost shows as 127.0.0.1 on the server machine
