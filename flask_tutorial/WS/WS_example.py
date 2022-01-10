@@ -22,8 +22,8 @@ msg = Message()
 
 @app.route('/')
 @app.route('/<value>')
-def index(value=None):
-    print('value from button press: {}'.\
+def index(value=0):
+    print('\nvalue from button press: {}\n'.\
           format(msg.mapping[value]))
     return render_template("index.html", buttons=buttons)
 
