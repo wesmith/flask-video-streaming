@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 # url_for__demo.py
-# WESmith 01/09/22 see readme.txt for source, WS modified for python 3
+# WESmith 01/09/22 
+# see readme.txt for source, WS modified for python 3
 
 from flask import Flask, redirect, url_for
 
@@ -17,10 +18,10 @@ def hello_guest(guest):
 
 @app.route('/user/<name>')
 def hello_user(name):
-   if name =='admin':
-      return redirect(url_for('hello_admin'))
-   else:
-      return redirect(url_for('hello_guest', guest = name))
+    if name =='admin':
+        return redirect(url_for('hello_admin'))
+    else:
+        return redirect(url_for('hello_guest', guest = name))
 
 
 if __name__ == '__main__':
