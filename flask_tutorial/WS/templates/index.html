@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+   <body>
+       
+       
+    <script>
+    function changed(value)
+    {window.location.href='/' + value}  
+    </script>
+
+       
+        <table border=4>
+
+        {% for key, value in msg.items() %}
+        <tr>
+        <td>
+           <input type='button' class='button'
+            onClick='changed({{value}})' 
+            value={{key}}>
+        </td>
+        </tr>
+        {% endfor %}
+    
+        </table>
+   </body>
+</html>
