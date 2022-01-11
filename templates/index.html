@@ -1,47 +1,54 @@
+<!doctype html>
 <html>
     
 <style>
 <!-- border doesn_t seem to work -->
 .button {
   background-color: transparent;
-  color: rgb(250, 250, 250);
-  font-size: 4rem;
+  color: rgb(250, 0, 250);
+  font-size: 2rem;
   margin: 10px 15px;
   border: none;
 }
 </style>
- 
+
   <head>
     <title>Raspberry Pi 4 Video Streaming</title>
       <link rel="stylesheet" 
             href="{{ url_for('static', filename='css/main.css') }}">
   </head>
+
   <body>
     <h1>Raspberry Pi 4 Video Streaming</h1>
+
     <img src="{{ url_for('video_feed') }}">
     <!-- WS the following line will put up a second identical frame -->
     <!-- img src="{{ url_for('video_feed') }}" -->
 
+    <br></br>
+
     <script>
-    function changed(val)
-    {window.location.href='/' + val}  
+    function changed(value)
+    {window.location.href='/' + value}
     </script>
 
-    <br></br>
-    <table class="center">
-    
-    <%for j, k in enumerate(buttons):>
+    <table class="center" border=4>
+    {% for key, choices in buttons.items() %}
         <tr>
         <td>
         <input type='button' class='button'
-          onClick='changed({{j}})' 
-          value={{k}}>
+        value={{key}}>
         </td>
+        {% for toggle, value in choices.items() %}
+            <td>
+            <input type='button' class='button'
+            onClick='changed({{value}})'
+            value={{toggle}}>
+            </td>
+        {% endfor %}
         </tr>
-    <%end>
-    
+    {% endfor %}
     </table>
     
-    
-    </body>
+  </body>
 </html>
