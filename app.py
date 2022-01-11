@@ -24,22 +24,29 @@ else:
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
 
-button_names = ['ZERO', 'ONE', 'TWO']  # WS
+buttons = {'INVERT': {'on': 0, 'off': 1},
+           'DEFOCUS':{'on': 2, 'off': 3},
+           'FLIP':   {'on': 4, 'off': 5}}
 
 class Message():
-    def __init__(self, msg=100):
-        self.msg = msg
+    def __init__(self):
+        self.value   = None
+        self.mapping = {'0': 'INVERT ON',  '1': 'INVERT OFF',
+                        '2': 'DEFOCUS ON', '3': 'DEFOCUS OFF',
+                        '4': 'FLIP ON',    '5': 'FLIP OFF'}
 msg = Message()
 
 app = Flask(__name__)
 
 @app.route('/')
-@app.route('/val') # WS added buttons
-def index(val=5):
+@app.route('/<value>') # WS added buttons
+def index(value=0):
     """Video streaming home page."""
-    msg.msg = val
+    msg.value = value
+    print('\nvalue from button press: {}\n'.\
+          format(msg.mapping[value]))
     return render_template('index.html',
-                           buttons=button_names)
+                           buttons=buttons)
 
 def gen(camera):
     """Video streaming generator function."""
