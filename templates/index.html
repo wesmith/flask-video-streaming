@@ -6,7 +6,7 @@
 .button {
   background-color: transparent;
   color: rgb(250, 0, 250);
-  font-size: 2rem;
+  font-size: 4.0rem;
   margin: 10px 15px;
   border: none;
 }
@@ -25,12 +25,15 @@
     <!-- WS the following line will put up a second identical frame -->
     <!-- img src="{{ url_for('video_feed') }}" -->
 
-    <br></br>
-
     <script>
     function changed(value)
     {window.location.href='/' + value}
     </script>
+
+    <br></br>
+    <input type='button' class='button'
+    onClick='changed({{default[1]}})'
+    value={{default[0]}}>
 
     <table class="center" border=4>
     {% for key, choices in buttons.items() %}

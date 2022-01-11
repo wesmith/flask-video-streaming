@@ -24,16 +24,19 @@ else:
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
 
-buttons = {'INVERT': {'on': 0, 'off': 1},
-           'DEFOCUS':{'on': 2, 'off': 3},
-           'FLIP':   {'on': 4, 'off': 5}}
+default_button = ['DEFAULT', 0]
+
+buttons = {'INVERT': {'on': 1, 'off': 2},
+           'DEFOCUS':{'on': 3, 'off': 4},
+           'FLIP':   {'on': 5, 'off': 6}}
 
 class Message():
     def __init__(self):
-        self.value   = None
-        self.mapping = {'0': 'INVERT ON',  '1': 'INVERT OFF',
-                        '2': 'DEFOCUS ON', '3': 'DEFOCUS OFF',
-                        '4': 'FLIP ON',    '5': 'FLIP OFF'}
+        self.value   = '0'
+        self.mapping = {'0': 'DEFAULT', 
+                        '1': 'INVERT ON',  '2': 'INVERT OFF',
+                        '3': 'DEFOCUS ON', '4': 'DEFOCUS OFF',
+                        '5': 'FLIP ON',    '6': 'FLIP OFF'}
 msg = Message()
 
 app = Flask(__name__)
@@ -42,10 +45,11 @@ app = Flask(__name__)
 @app.route('/<value>') # WS added buttons
 def index(value=0):
     """Video streaming home page."""
-    msg.value = value
-    print('\nvalue from button press: {}\n'.\
-          format(msg.mapping[value]))
+    msg.value = str(value)
+    #print('\nvalue from button press: {}\n'.\
+    #      format(msg.mapping[msg.value]))
     return render_template('index.html',
+                           default=default_button,
                            buttons=buttons)
 
 def gen(camera):
