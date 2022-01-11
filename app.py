@@ -24,12 +24,33 @@ else:
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
 
+default_button = ['DEFAULT', 0]
+
+buttons = {'INVERT': {'on': 1, 'off': 2},
+           'DEFOCUS':{'on': 3, 'off': 4},
+           'FLIP':   {'on': 5, 'off': 6}}
+
+class Message():
+    def __init__(self):
+        self.value   = '0'
+        self.mapping = {'0': 'DEFAULT', 
+                        '1': 'INVERT ON',  '2': 'INVERT OFF',
+                        '3': 'DEFOCUS ON', '4': 'DEFOCUS OFF',
+                        '5': 'FLIP ON',    '6': 'FLIP OFF'}
+msg = Message()
+
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+@app.route('/<value>') # WS added buttons
+def index(value=0):
     """Video streaming home page."""
-    return render_template('index.html')
+    msg.value = str(value)
+    #print('\nvalue from button press: {}\n'.\
+    #      format(msg.mapping[msg.value]))
+    return render_template('index.html',
+                           default=default_button,
+                           buttons=buttons)
 
 def gen(camera):
     """Video streaming generator function."""
@@ -38,7 +59,7 @@ def gen(camera):
         frame = camera.get_frame()
         yield b'Content-Type: image/jpeg\r\n\r\n' + frame +\
               b'\r\n--frame\r\n'
-
+        
 @app.route('/video_feed')
 def video_feed():
     """
@@ -46,7 +67,8 @@ def video_feed():
     img tag.
     """
     txt = 'multipart/x-mixed-replace; boundary=frame'
-    return Response(gen(Camera()), mimetype=txt)
+    # WS try passing a message to Camera class
+    return Response(gen(Camera(message=msg)), mimetype=txt)
 
 
 if __name__ == '__main__':

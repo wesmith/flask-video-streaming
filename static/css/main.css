@@ -9,7 +9,7 @@ body {
 }
 
 button {
-    background: rgb(255, 0, 0);
+    background: transparent;
     font-size: 4.0rem;
 }
 
