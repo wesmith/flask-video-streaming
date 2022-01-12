@@ -17,6 +17,7 @@
 	  crossorigin="anonymous">
 
     <script src="{{ url_for('static', filename='qtc-calc.js') }}"></script>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
  <!-- WS added the following simple script for troubleshooting: unfinished -->
@@ -67,6 +68,28 @@
 
       <br><br>
       <input type="submit" name="next" value="Next" onclick="calculateQTc();">
+      
+      <script>
+	$(document).ready(function() {
+	    $("button").click(function() {
+		$.ajax({
+		    type: "GET",
+		    url:  "/WS_test",
+		    data: "8",
+		    contentType: 'application/json;charset=UTF-8',
+		    success:     function(result) {
+			alert(result.output);
+		    }
+	    })
+	  })
+	})
+      </script>
+      
+      <br><br>
+      <input type="submit" name="ws" value="WS" onclick="WS_func()">  # WS
+
+      <button>click me<button> # WS
+      
 
       <br><br>
       <div id="qtc-results">
