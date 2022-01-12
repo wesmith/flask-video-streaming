@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # flask-demo-qt-interval.py
 # WESmith 01/11/22
 # copied from
@@ -47,6 +49,8 @@ def index():
 def process_qt_calculation():
     if request.method == "POST":
         qtc_data = request.get_json()
+        print('\n\nhello from /process_qtc\n\n')  # WS
+        print('\n\nqtc_data: {}\n\n'.format(qtc_data)) # WS
         db.session.add(Store_QTc_data(qtc_data[0]['QTc'],
                                       qtc_data[1]['prolonged'],
                                       qtc_data[2]['HR'],
