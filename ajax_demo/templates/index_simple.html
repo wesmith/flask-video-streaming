@@ -1,0 +1,69 @@
+<!-- ajax_demo templates/index_simple.html
+ WS 01/12/22 -->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Flask-Ajax Example</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- this is producing an error for some reason
+    <link rel="stylesheet"
+	  href="{{ url_for('static', filename='my-style.css') }}”>
+-->     
+    <script 
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+
+  </head>
+    
+  <body>
+
+    <div id="flask-ajax example">
+
+      <h1>Flask-Ajax Example</h1>
+<!--
+      <p>Please enter numbers to transmit to the flask back-end:</p>
+
+      <br>
+      <label>Enter val1</label>
+      <input type="number" name="val1" id="val1">
+      <br>
+
+      <br>
+      <label>Enter val2</label>
+      <input type="number" name="val2" id="val2">
+      <br>
+
+      <br>
+      <label>Enter val3</label>
+      <input type="number" name="val3" id="val3">
+      <br>
+-->
+    </div>
+     <!-- 
+      <script>
+        $(document).ready(function() {
+        var val1 = document.getElementById("val1").value;
+        var val2 = document.getElementById("val2").value;
+        var val3 = document.getElementById("val3").value;
+        var data = {{"v1": val1}, {"v2": val2}, {"v3": val3}}
+	    $("button").click(function() {
+		$.ajax({
+		    type: "POST",
+		    url:  "/WS_test",
+		    data: JSON.stringify(data),
+		    contentType: 'application/json',
+            dataTyep:    'json'
+		    success: function(result) {
+			alert(result.output); }
+	    })
+	  })
+	})
+      </script>
+
+    <button>click me</button>
+-->
+  </body>
+</html>
