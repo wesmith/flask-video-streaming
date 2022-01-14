@@ -13,6 +13,7 @@
 from importlib import import_module
 import os
 from flask import Flask, render_template, Response
+from flask import jsonify, request
 
 # import camera driver
 if os.environ.get('CAMERA'):
@@ -42,16 +43,11 @@ msg = Message()
 app = Flask(__name__)
 
 @app.route('/')
-@app.route('/<value>') # WS added buttons
-def index(value=0):
+def index():
     """Video streaming home page."""
-    msg.value = str(value)
-    #print('\nvalue from button press: {}\n'.\
-    #      format(msg.mapping[msg.value]))
     return render_template('index.html',
                            default=default_button,
                            buttons=buttons)
-
 def gen(camera):
     """Video streaming generator function."""
     yield b'--frame\r\n'
@@ -59,7 +55,16 @@ def gen(camera):
         frame = camera.get_frame()
         yield b'Content-Type: image/jpeg\r\n\r\n' + frame +\
               b'\r\n--frame\r\n'
-        
+
+@app.route('/button_input', methods=['POST', 'GET'])
+def button_inputs():
+    # update the message to the Camera class from button inputs
+    if request.method == "POST":
+        result_txt = request.form['button_value']
+        msg.value = result_txt
+        #print('button value: {}'.format(result_txt))
+        return jsonify(output=msg.mapping[msg.value])   
+
 @app.route('/video_feed')
 def video_feed():
     """
@@ -67,7 +72,7 @@ def video_feed():
     img tag.
     """
     txt = 'multipart/x-mixed-replace; boundary=frame'
-    # WS try passing a message to Camera class
+    # WS added passing a message to the Camera class
     return Response(gen(Camera(message=msg)), mimetype=txt)
 
 
