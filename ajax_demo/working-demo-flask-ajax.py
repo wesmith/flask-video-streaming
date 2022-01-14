@@ -16,15 +16,17 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('indexTwo.html')
+    return render_template('working-demo-index.html')
 
 @app.route('/WS_test', methods=['POST', 'GET'])
 def test():
     if request.method == "POST":
-        data = request.form['username']
-        print('\n\nResults in back end: {}\n\n'.format(data))
+        result_txt = request.form['data']
+        txt  = result_txt.split(',')
+        vals = [float(k) for k in txt]
+        res  = sum(map(float, vals))
         return jsonify(output='it worked! got {} at {}'.\
-                       format(data, datetime.now()))
+                       format(res, datetime.now()))
     else:
         print('\n\nrequest method was not POST\n\n')
         return jsonify(output='POST method not used')  

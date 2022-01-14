@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Flask AJAX Test</title>
+<title>Flask AJAX Demo</title>
     
     <script>
     function loadXMLDoc()
@@ -25,9 +25,9 @@
     
         req.open('POST', '/WS_test')
         req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-        var un = document.getElementById('scname').value
-        var sec = document.getElementById('secret').value
-        var postVars = 'username='+un+'&secret='+sec
+        var val1 = document.getElementById('val1').value
+        var val2 = document.getElementById('val2').value
+        var postVars = 'data='+val1+','+val2
         req.send(postVars)
         
         return false
@@ -36,16 +36,18 @@
 </head>
 <body>
     
-<h1>Flask AJAX Test</h1>
+<h1>Flask AJAX Demo</h1>
     
 <form action="" method="POST">
-<input type="text" name="scname" id="scname">
-<input type="hidden" name="secret" id="secret" value="shhh">
-<input type="button" value="Submit" onclick="return loadXMLDoc()">
+    <label for="val1">First number to add:</label><br>
+    <input type="text" name="val1" id="val1"><br>
+    <label for="val2">Second number to add:</label><br>
+    <input type="text" name="val2" id="val2"><br>
+    <input type="button" value="Submit" onclick="return loadXMLDoc()">
 </form>
     
 <br>
-<div id="result">
+    <div id="result">
 </div>
 
 </body>
