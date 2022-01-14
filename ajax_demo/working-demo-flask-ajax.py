@@ -8,7 +8,7 @@
 #import os
 from flask import Flask, render_template, request, jsonify
 #from flask import url_for, session
-#from datetime import datetime
+from datetime import datetime
 
 #basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -16,20 +16,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('indexOne.html')
-'''
+    return render_template('indexTwo.html')
+
 @app.route('/WS_test', methods=['POST', 'GET'])
 def test():
     if request.method == "POST":
-        data = request.get_json()
-        for k in data:
-            print('/n/nResults in back end:')
-            print(k)
-        return jsonify(output='it worked!') 
-    else: 
-        print('request method was not POST')
-        return jsonify(output='did not get data')  
-'''
+        data = request.form['username']
+        print('\n\nResults in back end: {}\n\n'.format(data))
+        return jsonify(output='it worked! got {} at {}'.\
+                       format(data, datetime.now()))
+    else:
+        print('\n\nrequest method was not POST\n\n')
+        return jsonify(output='POST method not used')  
+
 
 if __name__ == "__main__":
 
