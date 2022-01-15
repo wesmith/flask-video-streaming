@@ -105,7 +105,7 @@ class Camera(BaseCamera):
             
             # get processing flags
             if msg.value =='0':
-                INVERT = BLUR = FLIP = False
+                INVERT = BLUR = FLIP = GRAY = False
             # invert colors
             if msg.value == '1': INVERT = True
             if msg.value == '2': INVERT = False
@@ -115,10 +115,15 @@ class Camera(BaseCamera):
             # flip image left-right
             if msg.value == '5': FLIP = True
             if msg.value == '6': FLIP = False
-            
+            # grayscale
+            if msg.value == '7': GRAY = True
+            if msg.value == '8': GRAY = False
+
             # image processing steps go here
             if INVERT: img = ~img
+            # TODO make size of blur kernel a parameter
             if BLUR:   img = cv2.blur(img, (10, 10))
+            # TODO make flip axis a parameter
             # 0, 1, -1 to flip around vert, horiz, both axes, respectively
             if FLIP:   img = cv2.flip(img, 1)
 
@@ -126,6 +131,10 @@ class Camera(BaseCamera):
             img = add_info(img, fps, cam_uptime,
                            scale[size], sizes[size],
                            msg.mapping[msg.value]) # WS
+
+            # do this after change-detection algorithm and adding text
+            # note: 3 channels going to 1 channel
+            if GRAY:   img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()
