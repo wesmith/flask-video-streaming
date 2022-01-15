@@ -38,7 +38,7 @@ def add_info(frame, fps, cam_uptime, scale, wid_hei, msg): # WS
     fps = '{:4.1f} FPS for width {}, height {}'.format(fps, *wid_hei)
     cv2.putText(frame, fps, (col0, row0 - 3 * delta), font, f_size,
                 (120, 255, 120), thick) # light green
-    msg = 'Button message: {}'.format(msg)
+    msg = '{}'.format(msg)
     cv2.putText(frame, msg, (col0, row0 - 4 * delta), font, f_size,
                 (255, 255, 255), thick) # white
     return frame
@@ -128,9 +128,13 @@ class Camera(BaseCamera):
             if FLIP:   img = cv2.flip(img, 1)
 
             # add text on image after processing
+            mapper = {1: 'ON', 0: 'OFF'}
+            button_state = 'INVERT {}, BLUR {}, FLIP {}, GRAY {}'.\
+                            format(mapper[INVERT], mapper[BLUR],
+                                   mapper[FLIP], mapper[GRAY])
             img = add_info(img, fps, cam_uptime,
-                           scale[size], sizes[size],
-                           msg.mapping[msg.value]) # WS
+                           scale[size], sizes[size], button_state)
+                           #msg.mapping[msg.value]) # WS
 
             # do this after change-detection algorithm and adding text
             # note: 3 channels going to 1 channel
