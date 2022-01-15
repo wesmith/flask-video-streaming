@@ -106,26 +106,34 @@ class Camera(BaseCamera):
             # get processing flags
             if msg.value =='0':
                 INVERT = BLUR = FLIP = GRAY = False
+
             # invert colors
-            if msg.value == '1': INVERT = True
-            if msg.value == '2': INVERT = False
-            # blur image with a fixed kernel size (will be an input later)
-            if msg.value == '3': BLUR = True
-            if msg.value == '4': BLUR = False
-            # flip image left-right
-            if msg.value == '5': FLIP = True
-            if msg.value == '6': FLIP = False
+            if msg.value == '10': INVERT = True
+            if msg.value == '11': INVERT = False
+
+            # blur image with kw x kw kernel
+            if msg.value == '42':
+                BLUR = True; kw = msg.kernel
+            if msg.value == '41': BLUR = False
+
+            # flip image
+            if msg.value == '20':
+                FLIP = True; flip_val =  1 # horiz
+            if msg.value == '21':
+                FLIP = True; flip_val =  0 # vert
+            if msg.value == '22':
+                FLIP = True; flip_val = -1 # 180 deg
+            if msg.value == '23': FLIP = False
+
             # grayscale
-            if msg.value == '7': GRAY = True
-            if msg.value == '8': GRAY = False
+            if msg.value == '30': GRAY = True
+            if msg.value == '31': GRAY = False
 
             # image processing steps go here
+
             if INVERT: img = ~img
-            # TODO make size of blur kernel a parameter
-            if BLUR:   img = cv2.blur(img, (10, 10))
-            # TODO make flip axis a parameter
-            # 0, 1, -1 to flip around vert, horiz, both axes, respectively
-            if FLIP:   img = cv2.flip(img, 1)
+            if BLUR:   img = cv2.blur(img, (kw, kw))
+            if FLIP:   img = cv2.flip(img, flip_val)
 
             # add text on image after processing
             mapper = {1: 'ON', 0: 'OFF'}

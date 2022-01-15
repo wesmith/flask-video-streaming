@@ -4,9 +4,9 @@
 <style>
 .button {
   background-color: transparent;
-  color: rgb(250, 0, 250);
-  font-size: 4.0rem;
-  margin: 10px 15px;
+  color: rgb(250, 200, 250);
+  font-size: 2.0rem;
+  margin: 1px 5px;
   border: none;
 }
 </style>
@@ -48,27 +48,73 @@
 <input type='button' class='button'
 onClick='changed({{default[1]}})'
 value={{default[0]}}>
+<br><br>
 
-<table class="center" border=4>
-{% for key, choices in buttons.items() %}
+<table class="center">
+<br>
+{% for key, choices in invert.items() %}
     <tr>
-    <td>
-    <input type='button' class='button'
-    value={{key}}>
-    </td>
+    <td><input type='button' class='button' value={{key}}></td>
     {% for toggle, value in choices.items() %}
-        <td>
-        <input type='button' class='button'
-        onClick='changed({{value}})'
-        value={{toggle}}>
-        </td>
+        <td><input type='button' class='button'
+        onClick='changed({{value}})' value={{toggle}}></td>
     {% endfor %}
     </tr>
 {% endfor %}
 </table>
 
+<table class="center" border=4>
 <br>
-<div id="button_result"></div>   
+{% for key, choices in flip.items() %}
+    <tr>
+    <td><input type='button' class='button' value={{key}}></td>
+    {% for toggle, value in choices.items() %}
+        <td><input type='button' class='button'
+        onClick='changed({{value}})' value={{toggle}}></td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+
+<table class="center" border=4>
+<br>
+{% for key, choices in gray.items() %}
+    <tr>
+    <td><input type='button' class='button' value={{key}}></td>
+    {% for toggle, value in choices.items() %}
+        <td><input type='button' class='button'
+        onClick='changed({{value}})' value={{toggle}}></td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+
+<table class="center" border=4>
+<br>
+{% for key, choices in blur.items() %}
+    <tr>
+    <td><input type='button' class='button' value={{key}}></td>
+    {% for toggle, value in choices.items() %}
+        <td><input type='button' class='button'
+        onClick='changed({{value}})' value={{toggle}}></td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>
     
+<form action="" method="POST">
+    <label for="blur"><h2>Blurring: Enter size of blurring kernel (int):</h2></label>
+    <input type="text" name="blur" id="blur">
+    <input type="button" value="ENTER"
+           onclick="changed(document.getElementById('blur').value+999)">
+    <br><br>
+</form>
+
+<br>
+<h2>
+    <p>Button Result:</p>
+    <div id="button_result"></div>
+</h2>
+
 </body>
 </html>

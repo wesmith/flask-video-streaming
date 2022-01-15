@@ -25,22 +25,28 @@ else:
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
 
-default_button = ['DEFAULT', 0]
+default_button = ['DEFAULT_VALUES', 0]
 
-buttons = {'INVERT': {'on': 1, 'off': 2},
-           'BLUR':   {'on': 3, 'off': 4},
-           'FLIP':   {'on': 5, 'off': 6},
-           'GRAY':   {'on': 7, 'off': 8}}
+invert = {'INVERT_COLORS': {'YES': 10, 'NO': 11}}
+flip   = {'FLIP_IMAGE':{'HORIZ': 20, 'VERT': 21,
+                        '180_DEG': 22, 'NO_FLIP': 23}}
+gray   = {'GRAYSCALE': {'YES': 30, 'NO': 31}}
+blur   = {'BLUR':      {'TURN_OFF': 41}}
+
+button_vals  = {'0': 'DEFAULT',
+               '10': 'INVERT ON',  '11': 'INVERT OFF',
+               '20': 'FLIP HORIZ', '21': 'FLIP VERT',
+               '22': 'FLIP 180 DEG', '23': 'NO FLIP',
+               '30': 'GRAYSCALE',   '31': 'COLOR',
+               '41': 'NO BLURRING', '42': 'BLURRING ON'}
 
 class Message():
-    def __init__(self):
+    def __init__(self, button_vals):
         self.value   = '0'
-        self.mapping = {'0': 'DEFAULT', 
-                        '1': 'INVERT ON', '2': 'INVERT OFF',
-                        '3': 'BLUR ON',   '4': 'BLUR OFF',
-                        '5': 'FLIP ON',   '6': 'FLIP OFF',
-                        '7': 'GRAY ON',   '8': 'GRAY OFF'}
-msg = Message()
+        self.mapping = button_vals
+        self.kernel  = None
+
+msg = Message(button_vals)
 
 app = Flask(__name__)
 
@@ -49,7 +55,10 @@ def index():
     """Video streaming home page."""
     return render_template('index.html',
                            default=default_button,
-                           buttons=buttons)
+                           invert=invert,
+                           flip=flip,
+                           gray=gray,
+                           blur=blur)
 def gen(camera):
     """Video streaming generator function."""
     yield b'--frame\r\n'
@@ -63,9 +72,20 @@ def button_inputs():
     # update the message to the Camera class from button inputs
     if request.method == "POST":
         result_txt = request.form['button_value']
-        msg.value = result_txt
-        #print('button value: {}'.format(result_txt))
-        return jsonify(output=msg.mapping[msg.value])   
+        # '999' is the symbol to indicate
+        #       blurring-kernel size input
+        if result_txt[-3:] == '999':
+            val = result_txt[:-3] # strip off the symbol
+            print('val: {}'.format(val))
+            ttt = 'Blurring with kernel size {} x {}'.format(val, val)
+            print(ttt)
+            msg.value  = '42'
+            msg.kernel = int(val)
+            return jsonify(output=ttt)
+        else:
+            msg.value = result_txt
+            #print('button value: {}'.format(result_txt))
+            return jsonify(output=msg.mapping[msg.value])
 
 @app.route('/video_feed')
 def video_feed():
