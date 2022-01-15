@@ -28,16 +28,16 @@ else:
 default_button = ['DEFAULT', 0]
 
 buttons = {'INVERT': {'on': 1, 'off': 2},
-           'DEFOCUS':{'on': 3, 'off': 4},
+           'BLUR':   {'on': 3, 'off': 4},
            'FLIP':   {'on': 5, 'off': 6}}
 
 class Message():
     def __init__(self):
         self.value   = '0'
         self.mapping = {'0': 'DEFAULT', 
-                        '1': 'INVERT ON',  '2': 'INVERT OFF',
-                        '3': 'DEFOCUS ON', '4': 'DEFOCUS OFF',
-                        '5': 'FLIP ON',    '6': 'FLIP OFF'}
+                        '1': 'INVERT ON', '2': 'INVERT OFF',
+                        '3': 'BLUR ON',   '4': 'BLUR OFF',
+                        '5': 'FLIP ON',   '6': 'FLIP OFF'}
 msg = Message()
 
 app = Flask(__name__)

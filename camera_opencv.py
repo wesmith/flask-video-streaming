@@ -60,9 +60,6 @@ class Camera(BaseCamera):
     def set_video_source(source):
         Camera.video_source = source
         
-    # WS see if this will run without being static so it can
-    # receive parameters from 'self': change it here and in 
-    # BaseCamera
     @staticmethod
     def frames():
         cam = cv2.VideoCapture(Camera.video_source)
@@ -88,6 +85,11 @@ class Camera(BaseCamera):
         # float 0 to 1; the larger alpha, the more smoothing
         alpha = 0.9
 
+        # processing flags
+        INVERT = False
+        BLUR   = False
+        FLIP   = False
+        
         while True:
             # WS calculate frames/sec (fps) in while loop
             dt    = time() - t_old
@@ -98,11 +100,29 @@ class Camera(BaseCamera):
             # read current frame
             _, img = cam.read()
 
-            # image processing step goes here
-            # xxx
-
-            # information as text on image goes here
+            # get user's button-push from the web page
             msg = Camera.message
+            
+            # get processing flags
+            if msg.value =='0':
+                INVERT = BLUR = FLIP = False
+            # invert colors
+            if msg.value == '1': INVERT = True
+            if msg.value == '2': INVERT = False
+            # blur image with a fixed kernel size (will be an input later)
+            if msg.value == '3': BLUR = True
+            if msg.value == '4': BLUR = False
+            # flip image left-right
+            if msg.value == '5': FLIP = True
+            if msg.value == '6': FLIP = False
+            
+            # image processing steps go here
+            if INVERT: img = ~img
+            if BLUR:   img = cv2.blur(img, (10, 10))
+            # 0, 1, -1 to flip around vert, horiz, both axes, respectively
+            if FLIP:   img = cv2.flip(img, 1)
+
+            # add text on image after processing
             img = add_info(img, fps, cam_uptime,
                            scale[size], sizes[size],
                            msg.mapping[msg.value]) # WS
