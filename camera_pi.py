@@ -5,6 +5,12 @@ from base_camera import BaseCamera
 
 
 class Camera(BaseCamera):
+
+    def __init__(self, message=None):
+
+        # WS had to add this line for compatibility with camera_opencv Camera class
+        Camera.message = message
+
     @staticmethod
     def frames():
         with picamera.PiCamera() as camera:
