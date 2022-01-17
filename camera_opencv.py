@@ -44,7 +44,7 @@ def add_info(frame, fps, cam_uptime, scale, wid_hei, msg): # WS
     return frame
 
 class Camera(BaseCamera):
-    video_source = 0
+    video_source = 1  # WS if only webcam, this is 0; if picam connected, this is 1
     #message = None  # WS
 
     def __init__(self, message=None):
